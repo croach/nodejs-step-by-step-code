@@ -1,6 +1,10 @@
 var http = require('http'),
     url  = require('url'),
-    sys  = require('sys');
+    sys  = require('sys'),
+    path = require('path'),
+    jade = require('jade');
+    
+var viewsDir = path.join(__dirname, "views");
     
 // Create a router object
     
@@ -20,12 +24,22 @@ var router = {
             if (route.test(pathname)) {
                 callback(req, res);
                 return;
-            };
-            res.writeHead(404);
-            res.end("404 File Not Found");
+            }
         }
+        res.writeHead(404);
+        res.end("404 File not found");                
     }
 };
+
+// Helper functions
+
+function renderHtml(view, response, options) {
+    jade.renderFile(path.join(viewsDir, view), options, function(err, str) {
+        if (err) throw err;
+        response.writeHead(200, {"Content-Type": "text/html"});
+        response.end(str);
+    });        
+}
 
 // Add our routes
 
@@ -33,6 +47,12 @@ router.addRoute('^/posts/?$', function(req, res) {
     res.writeHead(200, {"Content-Type": "text/plain"});
     res.end("Hello Posts");
 });
+
+router.addRoute('^/posts/add/?$', function(req, res) {
+    var options = {}
+    renderHtml('index.jade', res, options);
+});
+
 
 // Create the actual http server
 
