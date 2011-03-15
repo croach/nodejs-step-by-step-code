@@ -3,13 +3,13 @@ html
   head
     title Missing Title
   body
-    form(method="post")
-      ul
-        li
+    form(method='post')
+      fieldset
+        p
           label Title:
-            input(type="text", name="title")
-        li
+            input(type='text', name='title')
+        p
           label Body:
-            textarea(name="body") 
-      
-      
+            textarea(name='mybody')
+        p
+          input(type='submit', value='Post')

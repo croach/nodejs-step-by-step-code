@@ -34,10 +34,10 @@ var router = {
 // Helper functions
 
 function renderHtml(view, response, options) {
-    jade.renderFile(path.join(viewsDir, view), options, function(err, str) {
+    jade.renderFile(path.join(viewsDir, view), options, function(err, html) {
         if (err) throw err;
         response.writeHead(200, {"Content-Type": "text/html"});
-        response.end(str);
+        response.end(html);
     });        
 }
 
@@ -49,7 +49,7 @@ router.addRoute('^/posts/?$', function(req, res) {
 });
 
 router.addRoute('^/posts/add/?$', function(req, res) {
-    var options = {}
+    var options = {};
     renderHtml('index.jade', res, options);
 });
 
