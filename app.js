@@ -12,18 +12,27 @@ var staticDir = path.join(__dirname, "public");
 // Create a router object
     
 var router = {
-    routes: [],
-    addRoute: function(route, callback) {
+    routes: {},
+    addRoute: function(route, method, callback) {
+        this.routes[method] = this.routes[method] || [];
         if ('string' === typeof route) {
             route = new RegExp(route);
         };
-        this.routes.push([route, callback]);
+        this.routes[method].push([route, callback]);
+    },
+    get: function(route, callback) {
+        this.addRoute(route, 'GET', callback)
+    },
+    post: function(route, callback) {
+        this.addRoute(route, 'POST', callback)        
     },
     dispatch: function(req, res) {
         var pathname = url.parse(req.url).pathname;
-        for (var i = 0; i < this.routes.length; i++) {
-            var route    = this.routes[i][0],
-                callback = this.routes[i][1];
+        var method = req.method;
+        var routes = this.routes[method] || [];
+        for (var i = 0; i < routes.length; i++) {
+            var route    = routes[i][0],
+                callback = routes[i][1];
             var m = route.exec(pathname);
             if (m) {
                 callback(req, res, m.slice(1));
@@ -57,12 +66,12 @@ function renderHtml(view, response, options) {
 
 // Add our routes
 
-router.addRoute('^/posts/?$', function(req, res) {
+router.get('^/posts/?$', function(req, res) {
     res.writeHead(200, {"Content-Type": "text/plain"});
     res.end("Hello Posts");
 });
 
-router.addRoute('^/posts/add/?$', function(req, res) {
+router.get('^/posts/add/?$', function(req, res) {
     var options = {};
     renderHtml('index.jade', res, options);
 });
