@@ -3,7 +3,8 @@ var http = require('http'),
     sys  = require('sys'),
     path = require('path'),
     jade = require('jade'),
-    fs   = require('fs');
+    fs   = require('fs'),
+    mime = require('mime');
     
 var viewsDir = path.join(__dirname, "views");
 var staticDir = path.join(__dirname, "public");
@@ -37,7 +38,8 @@ var router = {
                 res.writeHead(404);
                 res.end("404 File not found");
             }
-            res.writeHead(200, {"Content-Type": "text/css"});
+            var type = mime.lookup(pathname);
+            res.writeHead(200, {"Content-Type": type});
             res.end(data);
         });
     }
