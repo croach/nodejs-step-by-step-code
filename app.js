@@ -4,7 +4,8 @@ var http = require('http'),
     path = require('path'),
     jade = require('jade'),
     fs   = require('fs'),
-    mime = require('mime');
+    mime = require('mime'),
+    qs   = require('querystring');
     
 var viewsDir = path.join(__dirname, "views");
 var staticDir = path.join(__dirname, "public");
@@ -54,6 +55,8 @@ var router = {
     }
 };
 
+var posts = [];
+
 // Helper functions
 
 function renderHtml(view, response, options) {
@@ -64,18 +67,37 @@ function renderHtml(view, response, options) {
     });        
 }
 
+function redirect(response, url) {
+    response.writeHead(302, {
+        'Content-Type': 'text/html', 
+        'Location': url
+    });
+    response.end();
+}
+
 // Add our routes
 
 router.get('^/posts/?$', function(req, res) {
-    res.writeHead(200, {"Content-Type": "text/plain"});
-    res.end("Hello Posts");
+    var options = {locals: {posts: posts}};
+    renderHtml('post/list.jade', res, options);
 });
 
 router.get('^/posts/add/?$', function(req, res) {
     var options = {};
-    renderHtml('index.jade', res, options);
+    renderHtml('post/add.jade', res, options);
 });
 
+router.post('^/posts/add/?$', function(req, res) {
+    var body = "";
+    req.on('data', function(chunk) {
+        body += chunk;
+    });
+    req.on('end', function() {
+        var params = qs.parse(body);
+        posts.push(params);
+        redirect(res, '/posts');
+    });
+});
 
 // Create the actual http server
 
