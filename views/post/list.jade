@@ -1,0 +1,8 @@
+!!!
+html
+  head
+    title Missing Title
+  body
+    ul
+    - for (var i = posts.length - 1; post = posts[i], i >= 0; --i)
+      li: a(href="/posts/" + i)= post.title
