@@ -10,6 +10,29 @@ var http = require('http'),
 var viewsDir = path.join(__dirname, "views");
 var staticDir = path.join(__dirname, "public");
     
+// Helper functions
+
+function renderHtml(view, response, options) {
+    jade.renderFile(path.join(viewsDir, view), options, function(err, html) {
+        if (err) throw err;
+        response.writeHead(200, {"Content-Type": "text/html"});
+        response.end(html);
+    });        
+}
+
+function render404(response) {
+    response.writeHead(404);
+    response.end("404 File not found");    
+}
+
+function redirect(response, url) {
+    response.writeHead(302, {
+        'Content-Type': 'text/html', 
+        'Location': url
+    });
+    response.end();
+}
+
 // Create a router object
     
 var router = {
@@ -44,10 +67,7 @@ var router = {
         // If no route was found, check for a static file
         var filepath = path.join(staticDir, pathname);
         fs.readFile(filepath, function(err, data) {
-            if (err) {
-                res.writeHead(404);
-                res.end("404 File not found");
-            }
+            if (err) render404(res);
             var type = mime.lookup(pathname);
             res.writeHead(200, {"Content-Type": type});
             res.end(data);
@@ -57,30 +77,19 @@ var router = {
 
 var posts = [];
 
-// Helper functions
-
-function renderHtml(view, response, options) {
-    jade.renderFile(path.join(viewsDir, view), options, function(err, html) {
-        if (err) throw err;
-        response.writeHead(200, {"Content-Type": "text/html"});
-        response.end(html);
-    });        
-}
-
-function redirect(response, url) {
-    response.writeHead(302, {
-        'Content-Type': 'text/html', 
-        'Location': url
-    });
-    response.end();
-}
-
 // Add our routes
 
 router.get('^/posts/?$', function(req, res) {
     var options = {locals: {posts: posts}};
     renderHtml('post/list.jade', res, options);
 });
+
+router.get('^/posts/(\\d+)$', function(req, res, params) {
+    var post = posts[params[0]];
+    if (!post) render404(res); 
+    var options = {locals: {post: post}};
+    renderHtml('post/show.jade', res, options);
+})
 
 router.get('^/posts/add/?$', function(req, res) {
     var options = {};
