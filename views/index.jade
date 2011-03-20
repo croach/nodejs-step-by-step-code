@@ -2,14 +2,13 @@
 html
   head
     title Missing Title
+    link(href="/css/main.css", rel="stylesheet", type="text/css")
   body
     form(method='post')
       fieldset
-        p
-          label Title:
-            input(type='text', name='title')
-        p
-          label Body:
-            textarea(name='mybody')
-        p
-          input(type='submit', value='Post')
+        legend The Blog
+        label(for="title", id="first") Title
+          input(type='text', name='title')
+        label(for="mybody", id="last") Body
+          textarea(name='mybody', rows="15")
+        input(type='submit', value='Post')
