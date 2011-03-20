@@ -1,0 +1,90 @@
+body {
+    text-align: center;
+    font: 0.9em Arial, sans-serif;
+}
+
+#content {
+    width:400px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+}
+
+#admin {
+    float: right;
+    font-size: 0.8em;
+}
+
+#admin a {
+    text-decoration: none;
+}
+
+#admin a:hover { 
+    color: #6699CC; 
+}
+
+#admin a:link, a:visited { 
+    color: #669966; 
+}
+
+#data { 
+    height: 300px;
+}
+
+#spinner {
+    text-align: center;
+    padding: 140px 0 140px 0;
+}
+
+fieldset {
+    margin: 1.5em 0 0 0;
+    padding: 0;
+    border: 1px solid #BFBAB0;
+    background-color: #F0F0F0;
+}
+
+legend {
+    padding: 0;
+    margin-left: 1em;
+    color: #000000;
+    font-weight: bold;
+}
+
+fieldset ol {
+    padding: 1em 1em 0 1em;
+    list-style: none;
+}
+
+fieldset li {
+    padding-bottom: 1em;
+}
+
+fieldset .text {
+    width: 200px;
+}
+
+fieldset .select {
+    width: 206px;
+}
+
+fieldset .submit {
+    float: left;
+    width: auto;
+    margin-left: 14.4em;
+    background-color: #F0F0F0;
+    border: 1px solid #BFBAB0;
+    color: #555555;
+}
+
+fieldset .submit:hover {
+    border: 1px solid #666666;
+    background-color: #B8B8B8;
+    color: #000000;
+}
+
+label {
+    float: left;
+    width: 10em;
+    text-align: right;
+    margin-right: 1em;
+}

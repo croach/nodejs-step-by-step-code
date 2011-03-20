@@ -2,9 +2,11 @@ var http = require('http'),
     url  = require('url'),
     sys  = require('sys'),
     path = require('path'),
-    jade = require('jade');
+    jade = require('jade'),
+    fs   = require('fs');
     
 var viewsDir = path.join(__dirname, "views");
+var staticDir = path.join(__dirname, "public");
     
 // Create a router object
     
@@ -21,13 +23,23 @@ var router = {
         for (var i = 0; i < this.routes.length; i++) {
             var route    = this.routes[i][0],
                 callback = this.routes[i][1];
-            if (route.test(pathname)) {
-                callback(req, res);
+            var m = route.exec(pathname);
+            if (m) {
+                callback(req, res, m.slice(1));
                 return;
             }
         }
-        res.writeHead(404);
-        res.end("404 File not found");                
+        
+        // If no route was found, check for a static file
+        var filepath = path.join(staticDir, pathname);
+        fs.readFile(filepath, function(err, data) {
+            if (err) {
+                res.writeHead(404);
+                res.end("404 File not found");
+            }
+            res.writeHead(200, {"Content-Type": "text/css"});
+            res.end(data);
+        });
     }
 };
 
