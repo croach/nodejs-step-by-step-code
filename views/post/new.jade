@@ -1,0 +1,20 @@
+!!!
+html
+  head
+    title Missing Title
+    link(href="/css/scaffold.css", rel="stylesheet", type="text/css")
+  body
+    h1 New post
+    form(method='post', action="/posts/add", class="new_post", id="new_post")
+      .field
+        label(for="post_title") Title
+        br
+        input(type='text', name='title', id="post_title", size="30")
+      .field
+        label(for="post_content") Body
+        br
+        textarea(name='body', cols="40", rows="20", id="post_content")
+      .actions
+        input(type='submit', value='Create Post', id="post_submit")
+    br
+    a(href="/posts") Back

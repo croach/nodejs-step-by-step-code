@@ -99,14 +99,14 @@ router.get('^/posts/(\\d+)$', function(req, res, params) {
     renderHtml('post/show.jade', res, options);
 })
 
-// Show the "Add Post" form
-router.get('^/posts/add/?$', function(req, res) {
+// Show the "New Post" form
+router.get('^/posts/new/?$', function(req, res) {
     var options = {};
-    renderHtml('post/add.jade', res, options);
+    renderHtml('post/new.jade', res, options);
 });
 
 // Add a new post
-router.post('^/posts/add/?$', function(req, res) {
+router.post('^/posts/?$', function(req, res) {
     var body = "";
     req.on('data', function(chunk) {
         body += chunk;
