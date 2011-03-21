@@ -20,7 +20,7 @@ html
       - each post in posts
         tr
           td= post.title
-          td= post.body
+          td= post.content
           td: a(href="/posts/" + post.id) Show
           td: a(href="/posts/" + post.id + "/edit/") Edit
           td

@@ -33,6 +33,16 @@ function redirect(url, response) {
     response.end();
 }
 
+function parseBody(req, callback) {
+    var body = "";
+    req.on('data', function(chunk) {
+        body += chunk;
+    });
+    req.on('end', function() {
+        callback(qs.parse(body));
+    });
+}
+
 // Create a router object
     
 var router = {
@@ -107,15 +117,24 @@ router.get('^/posts/new/?$', function(req, res) {
 
 // Add a new post
 router.post('^/posts/?$', function(req, res) {
-    var body = "";
-    req.on('data', function(chunk) {
-        body += chunk;
-    });
-    req.on('end', function() {
-        var post = qs.parse(body);
-        post.id = nextId();
-        posts[post.id] = post; 
-        redirect('/posts', res);
+    // var body = "";
+    // req.on('data', function(chunk) {
+    //     body += chunk;
+    // });
+    // req.on('end', function() {
+    //     var post = qs.parse(body);
+    //     post.id = nextId();
+    //     posts[post.id] = post; 
+    //     redirect('/posts', res);
+    // });
+    parseBody(req, function(body) {
+        var post = {
+            id: nextId(), 
+            title: body.title,
+            content: body.content
+        }
+        posts[post.id] = post;
+        redirect('/posts', res);        
     });
 });
 

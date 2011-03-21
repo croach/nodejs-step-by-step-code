@@ -11,9 +11,9 @@ html
         br
         input(type='text', name='title', id="post_title", size="30", value=post.title)
       .field
-        label(for="post_content") Body
+        label(for="post_content") Content
         br
-        textarea(name='body', cols="40", rows="20", id="post_content")= post.body
+        textarea(name='content', cols="40", rows="20", id="post_content")= post.content
       .actions
         input(type='submit', value='Update Post', id="post_submit")
     br
