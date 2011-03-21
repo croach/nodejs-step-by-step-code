@@ -2,7 +2,20 @@
 html
   head
     title Missing Title
+    link(href="/css/scaffold.css", rel="stylesheet", type="text/css")
   body
-    ul
-    - for (var i = posts.length - 1; post = posts[i], i >= 0; --i)
-      li: a(href="/posts/" + i)= post.title
+    h1 Listing posts
+    table
+      tr
+        th Title
+        th Content
+        th(colspan="3")
+      - each post in posts
+        tr
+          td= post.title
+          td= post.body
+          td: a(href="/posts/" + post.id) Show
+          td: a(href="/posts/edit/" + post.id) Edit
+          td: a(href="/posts/delete/" + post.id) Delete
+    p
+      a(href="/posts/add") New Post

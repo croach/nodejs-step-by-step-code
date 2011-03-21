@@ -75,15 +75,23 @@ var router = {
     }
 };
 
-var posts = [];
+var posts = {};
+var nextId = (function() {
+    var id = 0;
+    return function() {
+        return ++id;
+    }
+})();
 
 // Add our routes
 
+// List all posts
 router.get('^/posts/?$', function(req, res) {
     var options = {locals: {posts: posts}};
     renderHtml('post/list.jade', res, options);
 });
 
+// Show a specific post
 router.get('^/posts/(\\d+)$', function(req, res, params) {
     var post = posts[params[0]];
     if (!post) render404(res); 
@@ -91,22 +99,31 @@ router.get('^/posts/(\\d+)$', function(req, res, params) {
     renderHtml('post/show.jade', res, options);
 })
 
+// Show the "Add Post" form
 router.get('^/posts/add/?$', function(req, res) {
     var options = {};
     renderHtml('post/add.jade', res, options);
 });
 
+// Add a new post
 router.post('^/posts/add/?$', function(req, res) {
     var body = "";
     req.on('data', function(chunk) {
         body += chunk;
     });
     req.on('end', function() {
-        var params = qs.parse(body);
-        posts.push(params);
+        var post = qs.parse(body);
+        post.id = nextId();
+        posts[post.id] = post; 
         redirect(res, '/posts');
     });
 });
+
+router.get('^/posts/delete/(\\d+)/?$', function(req, res, params) {
+    var id = params[0];
+    if (posts[id]) delete posts[id];
+    redirect('/posts/', res);
+})
 
 // Create the actual http server
 

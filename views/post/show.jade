@@ -2,6 +2,15 @@
 html
   head
     title= post.title
+    link(href="/css/scaffold.css", rel="stylesheet", type="text/css")
   body
-    h1= post.title
-    #post-body= post.body
+    p
+      b Title: 
+      =post.title
+    p
+      b Content: 
+      =post.body
+
+    a(href="/posts/edit") Edit
+    \ | 
+    a(href="/posts/") Back

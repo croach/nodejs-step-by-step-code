@@ -29,3 +29,29 @@ fieldset {
             
             fieldset label textarea {
                 width: 97%;}
+                
+ul#posts {
+    width: 300px;
+    list-style: none;
+    float:left;
+    margin-bottom: 20px;}
+    
+    ul#posts li.odd a {
+        background-color: #F0F0F0;}
+        
+    ul#posts li a {
+        margin-right: 0;
+        margin-left: 0;}
+        
+    li a.title {
+        padding-left: 10px;
+        float: left;
+        width: 190px;}
+    
+    li a.edit, li a.delete {
+        float: left;
+        width: 50px;}
+        
+
+#post-list #add-post {
+    clear: both;}
