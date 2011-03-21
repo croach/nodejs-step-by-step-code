@@ -85,25 +85,40 @@ var router = {
     }
 };
 
-var posts = {};
-var nextId = (function() {
+// Create our (in memory) data store 
+
+var posts = (function() {
     var id = 0;
-    return function() {
-        return ++id;
-    }
+    return {
+        db: {},
+        add: function(obj) {
+            obj.id = ++id;
+            this.db[id] = obj;
+        },
+        update: function(id, obj) {
+            obj.id = id;
+            this.db[id] = obj;
+        },
+        remove: function(id) {
+            delete this.db[id];
+        },
+        get: function(id) {
+            return this.db[id];
+        }
+    };
 })();
 
 // Add our routes
 
 // List all posts
 router.get('^/posts/?$', function(req, res) {
-    var options = {locals: {posts: posts}};
+    var options = {locals: {posts: posts.db}};
     renderHtml('post/list.jade', res, options);
 });
 
 // Show a specific post
 router.get('^/posts/(\\d+)$', function(req, res, params) {
-    var post = posts[params[0]];
+    var post = posts.get(params[0]);
     if (!post) render404(res); 
     var options = {locals: {post: post}};
     renderHtml('post/show.jade', res, options);
@@ -119,11 +134,10 @@ router.get('^/posts/new/?$', function(req, res) {
 router.post('^/posts/?$', function(req, res) {
     parseBody(req, function(body) {
         var post = {
-            id: nextId(), 
             title: body.title,
             content: body.content
         }
-        posts[post.id] = post;
+        posts.add(post);
         redirect('/posts', res);        
     });
 });
@@ -131,13 +145,13 @@ router.post('^/posts/?$', function(req, res) {
 // Delete the post
 router.post('^/posts/(\\d+)/delete/?$', function(req, res, params) {
     var id = params[0];
-    if (posts[id]) delete posts[id];
+    if (posts.get(id)) posts.remove(id);
     redirect('/posts/', res);
 });
 
 // Show the "Update Post" form
 router.get('^/posts/(\\d+)/edit', function(req, res, params) {
-    var post = posts[params[0]];
+    var post = posts.get(params[0]);
     if (!post) render404(res);
     var options = {locals: {post: post}};
     renderHtml('post/edit.jade', res, options);
@@ -146,15 +160,14 @@ router.get('^/posts/(\\d+)/edit', function(req, res, params) {
 // Update the post
 router.post('^/posts/(\\d+)/edit', function(req, res, params) {
     var id = params[0];
-    if (!posts[id]) render404(res);
+    if (!posts.get(id)) render404(res);
 
     parseBody(req, function(body) {
         var post = {
-            id: id,
             title: body.title,
             content: body.content
         };
-        posts[id] = post; 
+        posts.update(id, post);
         redirect('/posts', res);        
     });
 })
