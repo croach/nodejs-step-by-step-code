@@ -117,16 +117,6 @@ router.get('^/posts/new/?$', function(req, res) {
 
 // Add a new post
 router.post('^/posts/?$', function(req, res) {
-    // var body = "";
-    // req.on('data', function(chunk) {
-    //     body += chunk;
-    // });
-    // req.on('end', function() {
-    //     var post = qs.parse(body);
-    //     post.id = nextId();
-    //     posts[post.id] = post; 
-    //     redirect('/posts', res);
-    // });
     parseBody(req, function(body) {
         var post = {
             id: nextId(), 
@@ -138,12 +128,14 @@ router.post('^/posts/?$', function(req, res) {
     });
 });
 
+// Delete the post
 router.post('^/posts/(\\d+)/delete/?$', function(req, res, params) {
     var id = params[0];
     if (posts[id]) delete posts[id];
     redirect('/posts/', res);
 });
 
+// Show the "Update Post" form
 router.get('^/posts/(\\d+)/edit', function(req, res, params) {
     var post = posts[params[0]];
     if (!post) render404(res);
@@ -151,19 +143,20 @@ router.get('^/posts/(\\d+)/edit', function(req, res, params) {
     renderHtml('post/edit.jade', res, options);
 });
 
+// Update the post
 router.post('^/posts/(\\d+)/edit', function(req, res, params) {
     var id = params[0];
     if (!posts[id]) render404(res);
-    var body = "";
-    req.on('data', function(chunk) {
-        body += chunk;
-    });
-    req.on('end', function() {
-        var post = qs.parse(body);
-        post.id = id;
+
+    parseBody(req, function(body) {
+        var post = {
+            id: id,
+            title: body.title,
+            content: body.content
+        };
         posts[id] = post; 
-        redirect('/posts', res);
-    });    
+        redirect('/posts', res);        
+    });
 })
 
 // Create the actual http server
