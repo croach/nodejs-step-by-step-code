@@ -2,12 +2,10 @@ var url  = require('url'),
     path = require('path'),
     fs   = require('fs'),
     mime = require('mime');
-    
-
-var staticDir = path.join(__dirname, "public");
-    
+        
 function Router() {
-    this.routes = {}
+    this.routes = {};
+    this.staticDir = path.join(__dirname, "public");
 }
 
 Router.prototype.addRoute = function(route, method, callback) {
@@ -41,7 +39,7 @@ Router.prototype.dispatch = function(req, res) {
     }
     
     // If no route was found, check for a static file
-    var filepath = path.join(staticDir, pathname);
+    var filepath = path.join(this.staticDir, pathname);
     fs.readFile(filepath, function(err, data) {
         if (err) helpers.render404(res);
         var type = mime.lookup(pathname);

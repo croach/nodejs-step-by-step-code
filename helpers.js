@@ -1,15 +1,21 @@
 var qs   = require('querystring'),
     jade = require('jade'),
     path = require('path');
+    
+exports.defaultViewsDir = path.join(__dirname, "views");
 
-var viewsDir = path.join(__dirname, "views");
-
-exports.renderHtml = function(view, response, options) {
+exports.renderHtml = function(view, response, options, viewsDir) {
+    viewsDir = viewsDir || exports.defaultViewsDir;
     jade.renderFile(path.join(viewsDir, view), options, function(err, html) {
         if (err) throw err;
         response.writeHead(200, {"Content-Type": "text/html"});
         response.end(html);
     });        
+}
+
+exports.renderHtmlTest = function(view, viewsDir) {
+    viewsDir = viewsDir || exports.defaultViewsDir;
+    console.log(viewsDir);
 }
 
 exports.render404 = function(response) {
