@@ -2,47 +2,12 @@ var http = require('http'),
     url  = require('url'),
     sys  = require('sys'),
     path = require('path'),
-    jade = require('jade'),
     fs   = require('fs'),
     mime = require('mime'),
-    qs   = require('querystring');
-    
-var viewsDir = path.join(__dirname, "views");
+    helpers = require('./helpers');
+        
 var staticDir = path.join(__dirname, "public");
     
-// Helper functions
-
-function renderHtml(view, response, options) {
-    jade.renderFile(path.join(viewsDir, view), options, function(err, html) {
-        if (err) throw err;
-        response.writeHead(200, {"Content-Type": "text/html"});
-        response.end(html);
-    });        
-}
-
-function render404(response) {
-    response.writeHead(404);
-    response.end("404 File not found");    
-}
-
-function redirect(url, response) {
-    response.writeHead(302, {
-        'Content-Type': 'text/html', 
-        'Location': url
-    });
-    response.end();
-}
-
-function parseBody(req, callback) {
-    var body = "";
-    req.on('data', function(chunk) {
-        body += chunk;
-    });
-    req.on('end', function() {
-        callback(qs.parse(body));
-    });
-}
-
 // Create a router object
     
 var router = {
@@ -77,7 +42,7 @@ var router = {
         // If no route was found, check for a static file
         var filepath = path.join(staticDir, pathname);
         fs.readFile(filepath, function(err, data) {
-            if (err) render404(res);
+            if (err) helpers.render404(res);
             var type = mime.lookup(pathname);
             res.writeHead(200, {"Content-Type": type});
             res.end(data);
@@ -113,32 +78,32 @@ var posts = (function() {
 // List all posts
 router.get('^/posts/?$', function(req, res) {
     var options = {locals: {posts: posts.db}};
-    renderHtml('post/list.jade', res, options);
+    helpers.renderHtml('post/list.jade', res, options);
 });
 
 // Show a specific post
 router.get('^/posts/(\\d+)$', function(req, res, params) {
     var post = posts.get(params[0]);
-    if (!post) render404(res); 
+    if (!post) helpers.render404(res); 
     var options = {locals: {post: post}};
-    renderHtml('post/show.jade', res, options);
+    helpers.renderHtml('post/show.jade', res, options);
 })
 
 // Show the "New Post" form
 router.get('^/posts/new/?$', function(req, res) {
     var options = {};
-    renderHtml('post/new.jade', res, options);
+    helpers.renderHtml('post/new.jade', res, options);
 });
 
 // Add a new post
 router.post('^/posts/?$', function(req, res) {
-    parseBody(req, function(body) {
+    helpers.parseBody(req, function(body) {
         var post = {
             title: body.title,
             content: body.content
         }
         posts.add(post);
-        redirect('/posts', res);        
+        helpers.redirect('/posts', res);        
     });
 });
 
@@ -146,29 +111,29 @@ router.post('^/posts/?$', function(req, res) {
 router.post('^/posts/(\\d+)/delete/?$', function(req, res, params) {
     var id = params[0];
     if (posts.get(id)) posts.remove(id);
-    redirect('/posts/', res);
+    helpers.redirect('/posts/', res);
 });
 
 // Show the "Update Post" form
 router.get('^/posts/(\\d+)/edit', function(req, res, params) {
     var post = posts.get(params[0]);
-    if (!post) render404(res);
+    if (!post) helpers.render404(res);
     var options = {locals: {post: post}};
-    renderHtml('post/edit.jade', res, options);
+    helpers.renderHtml('post/edit.jade', res, options);
 });
 
 // Update the post
 router.post('^/posts/(\\d+)/edit', function(req, res, params) {
     var id = params[0];
-    if (!posts.get(id)) render404(res);
+    if (!posts.get(id)) helpers.render404(res);
 
-    parseBody(req, function(body) {
+    helpers.parseBody(req, function(body) {
         var post = {
             title: body.title,
             content: body.content
         };
         posts.update(id, post);
-        redirect('/posts', res);        
+        helpers.redirect('/posts', res);        
     });
 })
 
