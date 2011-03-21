@@ -25,7 +25,7 @@ function render404(response) {
     response.end("404 File not found");    
 }
 
-function redirect(response, url) {
+function redirect(url, response) {
     response.writeHead(302, {
         'Content-Type': 'text/html', 
         'Location': url
@@ -115,14 +115,36 @@ router.post('^/posts/?$', function(req, res) {
         var post = qs.parse(body);
         post.id = nextId();
         posts[post.id] = post; 
-        redirect(res, '/posts');
+        redirect('/posts', res);
     });
 });
 
-router.get('^/posts/delete/(\\d+)/?$', function(req, res, params) {
+router.post('^/posts/(\\d+)/delete/?$', function(req, res, params) {
     var id = params[0];
     if (posts[id]) delete posts[id];
     redirect('/posts/', res);
+});
+
+router.get('^/posts/(\\d+)/edit', function(req, res, params) {
+    var post = posts[params[0]];
+    if (!post) render404(res);
+    var options = {locals: {post: post}};
+    renderHtml('post/edit.jade', res, options);
+});
+
+router.post('^/posts/(\\d+)/edit', function(req, res, params) {
+    var id = params[0];
+    if (!posts[id]) render404(res);
+    var body = "";
+    req.on('data', function(chunk) {
+        body += chunk;
+    });
+    req.on('end', function() {
+        var post = qs.parse(body);
+        post.id = id;
+        posts[id] = post; 
+        redirect('/posts', res);
+    });    
 })
 
 // Create the actual http server

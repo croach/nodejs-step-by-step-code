@@ -2,6 +2,13 @@
 html
   head
     title Missing Title
+    script(type="text/javascript")
+      function deletePost(formName) {
+        if (window.confirm("Are you sure?")) {
+          document.forms[formName].submit();
+        }
+        return false;
+      }
     link(href="/css/scaffold.css", rel="stylesheet", type="text/css")
   body
     h1 Listing posts
@@ -15,7 +22,10 @@ html
           td= post.title
           td= post.body
           td: a(href="/posts/" + post.id) Show
-          td: a(href="/posts/edit/" + post.id) Edit
-          td: a(href="/posts/delete/" + post.id) Delete
-    p
-      a(href="/posts/new") New Post
+          td: a(href="/posts/" + post.id + "/edit/") Edit
+          td
+            form(name="delete_post_" + post.id, action="/posts/" + post.id + "/delete", method="post")
+              a(href="javascript:deletePost('delete_post_" + post.id +  "');") Delete
+              
+    br
+    a(href="/posts/new") New Post
