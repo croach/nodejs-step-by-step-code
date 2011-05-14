@@ -1,7 +1,8 @@
-var url  = require('url'),
-    path = require('path'),
-    fs   = require('fs'),
-    mime = require('mime');
+var url     = require('url'),
+    path    = require('path'),
+    fs      = require('fs'),
+    mime    = require('mime');
+    helpers = require('./helpers');
         
 function Router() {
     this.routes = {};
