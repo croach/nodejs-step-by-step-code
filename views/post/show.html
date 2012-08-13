@@ -1,0 +1,12 @@
+<html>
+  <head>
+    <title><%= post.title %></title>
+    <link rel="stylesheet" href="/css/master.css">
+  </head>
+  <body>
+    <p><b>Title:</b> <%= post.title %></p>
+    <p><b>Content:</b> <%= post.content %></p>
+
+    <a href="/posts/<%= post.id %>/edit">Edit</a> | <a href="/posts/">Back</a>
+  </body>
+</html>
