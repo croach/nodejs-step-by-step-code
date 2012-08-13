@@ -13,17 +13,17 @@ Router.prototype.addRoute = function(route, method, callback) {
     this.routes[method] = this.routes[method] || [];
     if ('string' === typeof route) {
         route = new RegExp(route);
-    };
+    }
     this.routes[method].push([route, callback]);
-}
+};
 
 Router.prototype.get = function(route, callback) {
-    this.addRoute(route, 'GET', callback)
-}
+    this.addRoute(route, 'GET', callback);
+};
 
 Router.prototype.post = function(route, callback) {
-    this.addRoute(route, 'POST', callback)
-}
+    this.addRoute(route, 'POST', callback);
+};
 
 Router.prototype.dispatch = function(req, res) {
     var pathname = url.parse(req.url).pathname;
@@ -47,6 +47,6 @@ Router.prototype.dispatch = function(req, res) {
         res.writeHead(200, {"Content-Type": type});
         res.end(data);
     });
-}
+};
 
-exports.Router = Router;
+module.exports = Router;

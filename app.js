@@ -1,35 +1,10 @@
 var http      = require('http'),
     util      = require('util'),
     httpUtils = require('./httpUtils'),
-    Router    = require('./router').Router;
+    Router    = require('./router'),
+    DB        = require('./db');
 
-var blog = (function() {
-    var id = 0;
-    return {
-        db: {},
-        add: function(obj) {
-            obj.id = ++id;
-            this.db[id] = obj;
-        },
-        update: function(id, obj) {
-            obj.id = id;
-            this.db[id] = obj;
-        },
-        remove: function(id) {
-            delete this.db[id];
-        },
-        get: function(id) {
-            return this.db[id];
-        },
-        posts: function() {
-            var posts = [];
-            for (var id in this.db) {
-                posts.push(this.db[id]);
-            }
-            return posts.sort(function(a, b) { return a.id - b.id; });
-        }
-    };
-})();
+var blog = new DB();
 var router = new Router();
 
 // Add our routes
