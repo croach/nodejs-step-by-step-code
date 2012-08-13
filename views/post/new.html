@@ -1,0 +1,26 @@
+<html>
+  <head>
+    <title>Missing title</title>
+    <link rel="stylesheet" type="text/css" href="/css/master.css"/>
+  </head>
+  <body>
+    <h1>New Post</h1>
+    <form action="/posts" method="post" id="post_form">
+      <div class="field">
+        <label for="post_title">Title</label>
+        <br/>
+        <input type="text" name="title" id="post_title" size="30">
+      </div>
+      <div class="field">
+        <label for="post_content">content</label>
+        <br/>
+        <textarea name="content" id="post_content" cols="30" rows="10"></textarea>
+      </div>
+      <div class="actions">
+        <input type="submit" value="Create Post" id="post_submit">
+      </div>
+    </form>
+    <br>
+    <a href="/posts">Back</a>
+  </body>
+</html>
