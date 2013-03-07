@@ -3,6 +3,10 @@ Node.js Blog Engine
 
 This repository contains the source code for the Nettuts+ series on web development with Node.js.
 
+### part-03
+
+In this episode, we learned about events and added the backend code to process a New Post form submit.
+
 ### part-01
 
 In this episode, the first route and view were added as well as some basic directory structure.
